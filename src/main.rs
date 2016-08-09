@@ -1,7 +1,7 @@
 
-mod kana;
-use kana::questions;
+mod kana_quiz;
+use kana_quiz::question_engine;
 
 fn main() {
-    questions::ask();
+    question_engine::ask();
 }
