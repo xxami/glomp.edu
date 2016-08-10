@@ -1,17 +1,24 @@
 
 use std::io::stdin;
 
-pub fn ask() {
-    let word = "ザワルド";
-    println!("type: {}", word);
+pub struct Asker;
+pub struct Answer {
+    pub correct: bool,
+}
 
-    let mut typed_word = String::new();
-    stdin().read_line(&mut typed_word)
-        .expect("Failed to read line");
+impl Asker {
+    pub fn ask(question: &str, answer: &str) -> Answer {
+        println!("{}", question);
 
-    println!("typed: {}", typed_word);
+        let mut typed_word = String::new();
+        stdin().read_line(&mut typed_word)
+            .expect("could not read input");
 
-    if typed_word.trim_right() == word {
-        println!("correctly typed {}!", word);
+        if answer == typed_word.trim_right() {
+            Answer { correct: true }
+        }
+        else {
+            Answer { correct: false }
+        }
     }
 }

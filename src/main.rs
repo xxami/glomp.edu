@@ -1,7 +1,10 @@
 
 mod kana_quiz;
-use kana_quiz::question_engine;
+use kana_quiz::question_engine::Asker;
 
 fn main() {
-    question_engine::ask();
+    let answer = Asker::ask("type: ザワルド", "ザワルド");
+    if answer.correct {
+        println!("correct!");
+    } 
 }
