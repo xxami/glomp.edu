@@ -1,17 +1,27 @@
 
-use std::io::stdin;
+use std::io;
 
-pub struct Asker;
+pub struct Asker<Ti, To>  {
+    input: Ti,
+    output: To,
+}
+
 pub struct Answer {
     pub correct: bool,
 }
 
-impl Asker {
-    pub fn ask(question: &str, answer: &str) -> Answer {
-        println!("{}", question);
+impl <Ti, To> Asker<Ti, To> {
+    pub fn new(input: Ti, output: To) -> Asker<Ti, To> {
+        Asker { input: input, output: output }
+    }
+
+    pub fn ask(&mut self, question: &str, answer: &str) -> Answer
+        where Ti: io::BufRead, To: io::Write {
+        write!(self.output, "{}", question)
+            .expect("could not write to output");
 
         let mut typed_word = String::new();
-        stdin().read_line(&mut typed_word)
+        self.input.read_line(&mut typed_word)
             .expect("could not read input");
 
         if answer == typed_word.trim_right() {
