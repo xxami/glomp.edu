@@ -1,7 +1,9 @@
 
-mod kana_quiz;
+mod glompdot;
+
 use std::io;
-use kana_quiz::question_engine::Asker;
+
+use glompdot::quiz::engine::Asker;
 
 fn main() {
     let stdin = io::stdin();
