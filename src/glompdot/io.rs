@@ -8,7 +8,7 @@ pub struct InputReader {
 
 pub struct InputReaderSim;
 
-trait InputReadableByLine {
+pub trait InputReadableByLine {
     fn read_line(&self) -> String;
 }
 
@@ -32,7 +32,7 @@ pub struct OutputWriter;
 
 pub struct OutputWriterSim;
 
-trait OutputWritable {
+pub trait OutputWritable {
     fn write_line(&self, line: &str);
     fn write(&self, line: &str);
 }

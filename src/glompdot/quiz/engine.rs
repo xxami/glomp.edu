@@ -1,5 +1,7 @@
 
-use std::io;
+use glompdot::io;
+use glompdot::io::InputReadableByLine;
+use glompdot::io::OutputWritable;
 
 pub struct Asker<Ti, To>  {
     input: Ti,
@@ -16,13 +18,11 @@ impl <Ti, To> Asker<Ti, To> {
     }
 
     pub fn ask(&mut self, question: &str, answer: &str) -> Answer
-        where Ti: io::BufRead, To: io::Write {
-        write!(self.output, "{}", question)
-            .expect("could not write to output");
+        where Ti: io::InputReadableByLine, To: io::OutputWritable {
+        self.output.write(question);
 
         let mut typed_word = String::new();
-        self.input.read_line(&mut typed_word)
-            .expect("could not read input");
+        typed_word = self.input.read_line();
 
         if answer == typed_word.trim_right() {
             Answer { correct: true }

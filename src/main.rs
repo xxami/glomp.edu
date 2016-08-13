@@ -1,18 +1,19 @@
 
 mod glompdot;
 
-use std::io;
-
+use glompdot::io::InputReader;
+use glompdot::io::OutputWriter;
+use glompdot::io::OutputWritable;
 use glompdot::quiz::engine::Asker;
 
 fn main() {
-    let stdin = io::stdin();
-    let input = stdin.lock();
-    let output = io::stdout();
+    let mut input = InputReader::new();
+    let mut output = OutputWriter::new();
 
     let mut asker = Asker::new(input, output);
-    let answer = asker.ask("type: ザワルド", "ザワルド");
+    let answer = asker.ask("can you type 'ザワルド'? ", "ザワルド");
+    
     if answer.correct {
-        println!("correct!");
+        // move error: output.write_line("correct!");
     } 
 }
