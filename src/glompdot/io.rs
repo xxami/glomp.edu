@@ -1,7 +1,10 @@
 
 use std::io;
 
-pub struct InputReader;
+pub struct InputReader {
+    stdin: io::Stdin,
+}
+
 pub struct InputReaderSim;
 
 trait InputReadableByLine {
@@ -9,16 +12,15 @@ trait InputReadableByLine {
 }
 
 impl InputReader {
-    pub fn new() {
-        InputReader { };
+    pub fn new() -> InputReader {
+        InputReader { stdin: io::stdin() }
     }
 }
 
 impl InputReadableByLine for InputReader {
     fn read_line(&self) -> String {
-        let stdin = io::stdin();
         let mut input_str = String::new();
-        stdin.read_line(&mut input_str)
+        self.stdin.read_line(&mut input_str)
             .expect("could not read from input");
 
         input_str
@@ -28,3 +30,23 @@ impl InputReadableByLine for InputReader {
 pub struct OutputWriter;
 pub struct OutputWriterSim;
 
+#[cfg(test)]
+mod input_reader_tests {
+    use std::io;
+    use std::io::Write;
+    use super::InputReader;
+    use super::InputReadableByLine;
+
+    #[test]
+    #[ignore]
+    fn reads_single_lines() {
+        let mut input_reader = InputReader::new();
+        print!("\nEnter 'first': ");
+        io::stdout().flush().unwrap();
+        assert_eq!(input_reader.read_line(), "first\n");
+        
+        print!("Enter 'second': ");
+        io::stdout().flush().unwrap();
+        assert_eq!(input_reader.read_line(), "second\n");
+    }
+}
