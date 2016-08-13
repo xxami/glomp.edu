@@ -1,5 +1,6 @@
 
 use std::io;
+use std::io::Write;
 
 pub struct InputReader {
     stdin: io::Stdin,
@@ -28,7 +29,30 @@ impl InputReadableByLine for InputReader {
 }
 
 pub struct OutputWriter;
+
 pub struct OutputWriterSim;
+
+trait OutputWritable {
+    fn write_line(&self, line: &str);
+    fn write(&self, line: &str);
+}
+
+impl OutputWriter {
+    pub fn new() -> OutputWriter {
+        OutputWriter { }
+    }
+}
+
+impl OutputWritable for OutputWriter {
+    fn write_line(&self, line: &str) {
+        println!("{}", line);
+    }
+
+    fn write(&self, line: &str) {
+        print!("{}", line);
+        io::stdout().flush().unwrap();
+    }
+}
 
 #[cfg(test)]
 mod input_reader_tests {
@@ -40,13 +64,19 @@ mod input_reader_tests {
     #[test]
     #[ignore]
     fn reads_single_lines() {
+        let mut stdout = io::stdout();
         let mut input_reader = InputReader::new();
         print!("\nEnter 'first': ");
-        io::stdout().flush().unwrap();
+        stdout.flush().unwrap();
         assert_eq!(input_reader.read_line(), "first\n");
         
         print!("Enter 'second': ");
-        io::stdout().flush().unwrap();
+        stdout.flush().unwrap();
         assert_eq!(input_reader.read_line(), "second\n");
+
+        let mut second_input_reader = InputReader::new();
+        print!("Enter 'third': ");
+        stdout.flush().unwrap();
+        assert_eq!(input_reader.read_line(), "third\n");
     }
 }
