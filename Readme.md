@@ -8,5 +8,9 @@ $ cargo run
 #### Run tests
 ```sh
 $ cargo test
-$ cargo test -- --ignored --nocapture
+```
+#### Pseudo-automated tests
+hacky tests requiring manual intervention are ignored by default, to run them (note they must be run sequentially):
+```sh
+$ RUST_TEST_THREADS=1 cargo test -- --ignored --nocapture
 ```

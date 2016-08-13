@@ -66,7 +66,7 @@ mod input_reader_tests {
     fn reads_single_lines() {
         let mut stdout = io::stdout();
         let mut input_reader = InputReader::new();
-        print!("\nEnter 'first': ");
+        print!("\n\nEnter 'first': ");
         stdout.flush().unwrap();
         assert_eq!(input_reader.read_line(), "first\n");
         
@@ -78,5 +78,48 @@ mod input_reader_tests {
         print!("Enter 'third': ");
         stdout.flush().unwrap();
         assert_eq!(input_reader.read_line(), "third\n");
+    }
+}
+
+#[cfg(test)]
+mod output_reader_tests {
+    use std::io;
+    use super::OutputWriter;
+    use super::OutputWritable;
+
+    #[test]
+    #[ignore]
+    fn writes_single_lines() {
+        let stdin = io::stdin();
+        let mut output_writer = OutputWriter::new();
+        print!("\n\nEnter 'y' if the following text = 'first\\nsecond\\nthird\\n': ");
+        output_writer.write_line("first");
+        output_writer.write_line("second");
+
+        let mut second_output_writer = OutputWriter::new();
+        second_output_writer.write_line("third");
+
+        let mut test_passed = String::new();
+        stdin.read_line(&mut test_passed).unwrap();
+
+        assert_eq!(test_passed, "y\n");
+    }
+
+    #[test]
+    #[ignore]
+    fn writes_str_without_newlines() {
+        let stdin = io::stdin();
+        let mut output_writer = OutputWriter::new();
+        print!("\n\nEnter 'y' if the following text = 'first\\nsecond third: ': ");
+        output_writer.write("first\n");
+        output_writer.write("second ");
+
+        let mut second_output_writer = OutputWriter::new();
+        second_output_writer.write("third: ");
+
+        let mut test_passed = String::new();
+        stdin.read_line(&mut test_passed).unwrap();
+
+        assert_eq!(test_passed, "y\n");
     }
 }
