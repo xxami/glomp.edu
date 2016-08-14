@@ -1,7 +1,5 @@
 
 use glompdot::io;
-use glompdot::io::InputReadableByLine;
-use glompdot::io::OutputWritable;
 
 pub struct Asker<Ti, To>  {
     input: Ti,
@@ -21,8 +19,7 @@ impl <Ti, To> Asker<Ti, To> {
         where Ti: io::InputReadableByLine, To: io::OutputWritable {
         self.output.write(question);
 
-        let mut typed_word = String::new();
-        typed_word = self.input.read_line();
+        let typed_word = self.input.read_line();
 
         if answer == typed_word.trim_right() {
             Answer { correct: true }

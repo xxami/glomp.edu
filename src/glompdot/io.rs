@@ -2,10 +2,10 @@
 use std::io;
 use std::io::Write;
 
-pub struct InputReader {
-    stdin: io::Stdin,
-}
+#[derive(Copy, Clone)]
+pub struct InputReader;
 
+#[derive(Copy, Clone)]
 pub struct InputReaderSim;
 
 pub trait InputReadableByLine {
@@ -14,22 +14,24 @@ pub trait InputReadableByLine {
 
 impl InputReader {
     pub fn new() -> InputReader {
-        InputReader { stdin: io::stdin() }
+        InputReader { }
     }
 }
 
 impl InputReadableByLine for InputReader {
     fn read_line(&self) -> String {
         let mut input_str = String::new();
-        self.stdin.read_line(&mut input_str)
+        io::stdin().read_line(&mut input_str)
             .expect("could not read from input");
 
         input_str
     }
 }
 
+#[derive(Copy, Clone)]
 pub struct OutputWriter;
 
+#[derive(Copy, Clone)]
 pub struct OutputWriterSim;
 
 pub trait OutputWritable {
