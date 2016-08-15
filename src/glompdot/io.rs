@@ -5,11 +5,13 @@ use std::io::Write;
 #[derive(Copy, Clone)]
 pub struct InputReader;
 
-// #[derive(Copy, Clone)]
-// pub struct InputReaderSim;
+#[cfg(test)]
+pub struct InputReaderSim {
+    prepared_input: Vec<String>,
+}
 
 pub trait InputReadableByLine {
-    fn read_line(&self) -> String;
+    fn read_line(&mut self) -> String;
 }
 
 impl InputReader {
@@ -19,12 +21,24 @@ impl InputReader {
 }
 
 impl InputReadableByLine for InputReader {
-    fn read_line(&self) -> String {
+    fn read_line(&mut self) -> String {
         let mut input_str = String::new();
-        io::stdin().read_line(&mut input_str)
-            .expect("could not read from input");
-
+        io::stdin().read_line(&mut input_str).unwrap();
         input_str
+    }
+}
+
+#[cfg(test)]
+impl InputReaderSim {
+    pub fn new(prepared_input: Vec<String>) -> InputReaderSim {
+        InputReaderSim { prepared_input: prepared_input }
+    }
+}
+
+#[cfg(test)]
+impl InputReadableByLine for InputReaderSim {
+    fn read_line(&mut self) -> String {
+        self.prepared_input.pop().unwrap()
     }
 }
 
@@ -67,7 +81,7 @@ mod input_reader_tests {
     #[ignore]
     fn reads_single_lines() {
         let mut stdout = io::stdout();
-        let input_reader = InputReader::new();
+        let mut input_reader = InputReader::new();
         print!("\n\nEnter 'first': ");
         stdout.flush().unwrap();
         assert_eq!(input_reader.read_line(), "first\n");
@@ -76,10 +90,45 @@ mod input_reader_tests {
         stdout.flush().unwrap();
         assert_eq!(input_reader.read_line(), "second\n");
 
-        let second_input_reader = InputReader::new();
+        let mut second_input_reader = InputReader::new();
         print!("Enter 'third': ");
         stdout.flush().unwrap();
         assert_eq!(second_input_reader.read_line(), "third\n");
+    }
+}
+
+#[cfg(test)]
+mod input_reader_sim_tests {
+    use super::InputReaderSim;
+    use super::InputReadableByLine;
+
+    #[test]
+    fn reads_single_line() {
+        let stdin_playback = vec!["first".to_string()];
+        let mut input_reader = InputReaderSim::new(stdin_playback);
+        assert_eq!(input_reader.read_line(), "first");
+    }
+
+    #[test]
+    fn reads_many_lines() {
+        let stdin_playback = vec![
+            "third".to_string(),
+            "second".to_string(),
+            "first".to_string(),
+        ];
+        let mut input_reader = InputReaderSim::new(stdin_playback);
+        assert_eq!(input_reader.read_line(), "first");
+        assert_eq!(input_reader.read_line(), "second");
+        assert_eq!(input_reader.read_line(), "third");
+    }
+
+    #[test]
+    #[should_panic]
+    fn reads_past_playback_panics() {
+        let stdin_playback = vec!["first".to_string()];
+        let mut input_reader = InputReaderSim::new(stdin_playback);
+        input_reader.read_line();
+        input_reader.read_line();
     }
 }
 
