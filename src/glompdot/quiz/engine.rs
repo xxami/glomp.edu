@@ -29,3 +29,30 @@ impl <Ti, To> Asker<Ti, To> {
         }
     }
 }
+
+#[cfg(test)]
+mod asker_tests {
+    use glompdot::io::InputReaderSim;
+    use glompdot::io::OutputWriterSim;
+    use super::Asker;
+
+    #[test]
+    fn question_answered_correctly() {
+        let stdin_playback = vec!["equals".to_string()];
+        let input_reader = InputReaderSim::new(stdin_playback);
+        let output_writer = OutputWriterSim::new();
+        let mut asker = Asker::new(input_reader, output_writer);
+        let answer = asker.ask("question", "equals");
+        assert_eq!(answer.correct, true);
+    }
+
+        #[test]
+    fn question_answered_incorrectly() {
+        let stdin_playback = vec!["equals".to_string()];
+        let input_reader = InputReaderSim::new(stdin_playback);
+        let output_writer = OutputWriterSim::new();
+        let mut asker = Asker::new(input_reader, output_writer);
+        let answer = asker.ask("question", "not_equals");
+        assert_eq!(answer.correct, false);
+    }
+}
