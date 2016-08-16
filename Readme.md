@@ -1,5 +1,11 @@
 
 ## glomp.edu
+------------
+##
+| master  | develop |
+|---------|---|
+| [![Build Status](https://travis-ci.org/xxami/glomp.edu.svg?branch=master)](https://travis-ci.org/xxami/glomp.edu) |[![Build Status](https://travis-ci.org/xxami/glomp.edu.svg?branch=develop)](https://travis-ci.org/xxami/glomp.edu) |
+
 #### Build & run
 ```sh
 $ cargo build
