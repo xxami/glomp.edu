@@ -8,7 +8,7 @@ use glompdot::quiz::engine::Asker;
 
 fn main() {
     let input = InputReader::new();
-    let output = OutputWriter::new();
+    let mut output = OutputWriter::new();
 
     let mut asker = Asker::new(input, output);
     let answer = asker.ask("can you type 'ザワルド'? ", "ザワルド");

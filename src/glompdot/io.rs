@@ -45,12 +45,14 @@ impl InputReadableByLine for InputReaderSim {
 #[derive(Copy, Clone)]
 pub struct OutputWriter;
 
-// #[derive(Copy, Clone)]
-// pub struct OutputWriterSim;
+#[cfg(test)]
+pub struct OutputWriterSim {
+    generated_output: Vec<String>,
+}
 
 pub trait OutputWritable {
-    fn write_line(&self, line: &str);
-    fn write(&self, line: &str);
+    fn write_line(&mut self, line: &str);
+    fn write(&mut self, line: &str);
 }
 
 impl OutputWriter {
@@ -60,13 +62,31 @@ impl OutputWriter {
 }
 
 impl OutputWritable for OutputWriter {
-    fn write_line(&self, line: &str) {
+    fn write_line(&mut self, line: &str) {
         println!("{}", line);
     }
 
-    fn write(&self, line: &str) {
+    fn write(&mut self, line: &str) {
         print!("{}", line);
         io::stdout().flush().unwrap();
+    }
+}
+
+#[cfg(test)]
+impl OutputWriterSim {
+    pub fn new() -> OutputWriterSim {
+        OutputWriterSim { generated_output: Vec::new() }
+    }
+}
+
+#[cfg(test)]
+impl OutputWritable for OutputWriterSim {
+    fn write_line(&mut self, line: &str) {
+        self.generated_output.push(line.to_string() + "\n");
+    }
+
+    fn write(&mut self, line: &str) {
+        self.generated_output.push(line.to_string());
     }
 }
 
@@ -133,7 +153,7 @@ mod input_reader_sim_tests {
 }
 
 #[cfg(test)]
-mod output_reader_tests {
+mod output_writer_tests {
     use std::io;
     use super::OutputWriter;
     use super::OutputWritable;
@@ -142,12 +162,12 @@ mod output_reader_tests {
     #[ignore]
     fn writes_single_lines() {
         let stdin = io::stdin();
-        let output_writer = OutputWriter::new();
+        let mut output_writer = OutputWriter::new();
         print!("\n\nEnter 'y' if the following text = 'first\\nsecond\\nthird\\n': ");
         output_writer.write_line("first");
         output_writer.write_line("second");
 
-        let second_output_writer = OutputWriter::new();
+        let mut second_output_writer = OutputWriter::new();
         second_output_writer.write_line("third");
 
         let mut test_passed = String::new();
@@ -160,12 +180,12 @@ mod output_reader_tests {
     #[ignore]
     fn writes_str_without_newlines() {
         let stdin = io::stdin();
-        let output_writer = OutputWriter::new();
+        let mut output_writer = OutputWriter::new();
         print!("\n\nEnter 'y' if the following text = 'first\\nsecond third: ': ");
         output_writer.write("first\n");
         output_writer.write("second ");
 
-        let second_output_writer = OutputWriter::new();
+        let mut second_output_writer = OutputWriter::new();
         second_output_writer.write("third: ");
 
         let mut test_passed = String::new();
@@ -174,3 +194,4 @@ mod output_reader_tests {
         assert_eq!(test_passed, "y\n");
     }
 }
+
