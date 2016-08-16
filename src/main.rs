@@ -1,18 +1,19 @@
 
-use std::io::stdin;
+mod glompdot;
+
+use glompdot::io::InputReader;
+use glompdot::io::OutputWriter;
+use glompdot::io::OutputWritable;
+use glompdot::quiz::engine::Asker;
 
 fn main() {
+    let input = InputReader::new();
+    let mut output = OutputWriter::new();
 
-    let word = "ザワルド";
-    println!("type: {}", word);
-
-    let mut typed_word = String::new();
-    stdin().read_line(&mut typed_word)
-        .expect("Failed to read line");
-
-    println!("typed: {}", typed_word);
-
-    if typed_word.trim_right() == word {
-        println!("correctly typed {}!", word);
-    }
+    let mut asker = Asker::new(input, output);
+    let answer = asker.ask("can you type 'ザワルド'? ", "ザワルド");
+    
+    if answer.correct {
+        output.write_line("correct!");
+    } 
 }
