@@ -77,6 +77,10 @@ impl OutputWriterSim {
     pub fn new() -> OutputWriterSim {
         OutputWriterSim { generated_output: Vec::new() }
     }
+
+    pub fn pop_line(&mut self) -> String {
+        self.generated_output.pop().unwrap()
+    }
 }
 
 #[cfg(test)]
@@ -195,3 +199,42 @@ mod output_writer_tests {
     }
 }
 
+#[cfg(test)]
+mod output_writer_sim_tests {
+    use super::OutputWriterSim;
+    use super::OutputWritable;
+
+    #[test]
+    fn writes_single_line() {
+        let mut output_writer = OutputWriterSim::new();
+        output_writer.write_line("first");
+        assert_eq!(output_writer.pop_line(), "first\n");
+    }
+
+    #[test]
+    fn writes_single_lines() {
+        let mut output_writer = OutputWriterSim::new();
+        output_writer.write_line("first");
+        output_writer.write_line("second");
+        assert_eq!(output_writer.pop_line(), "second\n");
+        assert_eq!(output_writer.pop_line(), "first\n");
+    }
+
+    #[test]
+    fn writes_str_without_newlines() {
+        let mut output_writer = OutputWriterSim::new();
+        output_writer.write("first");
+        output_writer.write("second");
+        assert_eq!(output_writer.pop_line(), "second");
+        assert_eq!(output_writer.pop_line(), "first");
+    }
+
+    #[test]
+    fn writes_str_with_and_without_newlines() {
+        let mut output_writer = OutputWriterSim::new();
+        output_writer.write_line("first");
+        output_writer.write("second");
+        assert_eq!(output_writer.pop_line(), "second");
+        assert_eq!(output_writer.pop_line(), "first\n");
+    }
+}
