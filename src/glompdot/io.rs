@@ -167,13 +167,14 @@ mod output_writer_tests {
     fn writes_single_lines() {
         let stdin = io::stdin();
         let mut output_writer = OutputWriter::new();
-        print!("\n\nEnter 'y' if the following text = 'first\\nsecond\\nthird\\n': ");
+        print!("\n\n\
+            Enter 'y' if the following text = \
+            'first\\nsecond\\nthird\\n': ");
         output_writer.write_line("first");
         output_writer.write_line("second");
 
         let mut second_output_writer = OutputWriter::new();
         second_output_writer.write_line("third");
-
         let mut test_passed = String::new();
         stdin.read_line(&mut test_passed).unwrap();
 
@@ -185,13 +186,14 @@ mod output_writer_tests {
     fn writes_str_without_newlines() {
         let stdin = io::stdin();
         let mut output_writer = OutputWriter::new();
-        print!("\n\nEnter 'y' if the following text = 'first\\nsecond third: ': ");
+        print!("\n\n\
+            Enter 'y' if the following text = \
+            'first\\nsecond third: ': ");
         output_writer.write("first\n");
         output_writer.write("second ");
 
         let mut second_output_writer = OutputWriter::new();
         second_output_writer.write("third: ");
-
         let mut test_passed = String::new();
         stdin.read_line(&mut test_passed).unwrap();
 
