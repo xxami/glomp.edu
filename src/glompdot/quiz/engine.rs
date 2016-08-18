@@ -21,7 +21,7 @@ impl <Ti, To> Asker<Ti, To> {
 
         let typed_word = self.input.read_line();
 
-        if answer == typed_word.trim_right() {
+        if typed_word == answer {
             Answer { correct: true }
         }
         else {

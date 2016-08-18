@@ -24,7 +24,7 @@ impl InputReadableByLine for InputReader {
     fn read_line(&mut self) -> String {
         let mut input_str = String::new();
         io::stdin().read_line(&mut input_str).unwrap();
-        input_str
+        input_str.trim_right().to_string()
     }
 }
 
@@ -108,16 +108,16 @@ mod input_reader_tests {
         let mut input_reader = InputReader::new();
         print!("\n\nEnter 'first': ");
         stdout.flush().unwrap();
-        assert_eq!(input_reader.read_line(), "first\n");
+        assert_eq!(input_reader.read_line(), "first");
         
         print!("Enter 'second': ");
         stdout.flush().unwrap();
-        assert_eq!(input_reader.read_line(), "second\n");
+        assert_eq!(input_reader.read_line(), "second");
 
         let mut second_input_reader = InputReader::new();
         print!("Enter 'third': ");
         stdout.flush().unwrap();
-        assert_eq!(second_input_reader.read_line(), "third\n");
+        assert_eq!(second_input_reader.read_line(), "third");
     }
 }
 
