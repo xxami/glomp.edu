@@ -34,27 +34,35 @@ mod asker_tests {
     use glompdot::io::InputReaderSim;
     use glompdot::io::OutputWriterSim;
     use super::Asker;
+    use super::Question;
 
     #[test]
     fn question_answered_correctly() {
-        let stdin_playback = vec!["equals".to_string()];
-        let input_reader = InputReaderSim::new(stdin_playback);
-        let output_writer = OutputWriterSim::new();
-        let mut asker = Asker::new(input_reader, output_writer);
-        let answer = asker.ask("question", "equals");
+        let question = Question {
+            q: "question".to_string(),
+            a: "equals".to_string(),
+        };
+        let stdin = vec!["equals".to_string()];
+        let input = InputReaderSim::new(stdin);
+        let output = OutputWriterSim::new();
+        let answer = Asker::ask(input, output, question);
+
         assert_eq!(answer.correct, true);
+        // assert_eq!(output.pop_line(), "question");
     }
 
     #[test]
     fn question_answered_incorrectly() {
-        let stdin_playback = vec!["equals".to_string()];
-        let input_reader = InputReaderSim::new(stdin_playback);
-        let mut output_writer = OutputWriterSim::new();
-        {
-            let mut asker = Asker::new(input_reader, output_writer);
-            let answer = asker.ask("question", "not_equals");
-            assert_eq!(answer.correct, false);
-        }
-        assert_eq!(output_writer.pop_line(), "question")
+        let question = Question {
+            q: "question".to_string(),
+            a: "not_equals".to_string(),
+        };
+        let stdin = vec!["equals".to_string()];
+        let input = InputReaderSim::new(stdin);
+        let output = OutputWriterSim::new();
+        let answer = Asker::ask(input, output, question);
+        
+        assert_eq!(answer.correct, false);
+        // assert_eq!(output.pop_line(), "question");
     }
 }

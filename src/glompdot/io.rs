@@ -85,12 +85,12 @@ impl OutputWriterSim {
 
 #[cfg(test)]
 impl OutputWritable for OutputWriterSim {
-    fn write_line(&mut self, line: &str) {
-        self.generated_output.push(line.to_string() + "\n");
+    fn write_line(&mut self, line: String) {
+        self.generated_output.push(line + "\n");
     }
 
-    fn write(&mut self, line: &str) {
-        self.generated_output.push(line.to_string());
+    fn write(&mut self, line: String) {
+        self.generated_output.push(line);
     }
 }
 
@@ -105,19 +105,19 @@ mod input_reader_tests {
     #[ignore]
     fn reads_single_lines() {
         let mut stdout = io::stdout();
-        let mut input_reader = InputReader::new();
+        let mut input = InputReader::new();
         print!("\n\nEnter 'first': ");
         stdout.flush().unwrap();
-        assert_eq!(input_reader.read_line(), "first");
+        assert_eq!(input.read_line(), "first");
         
         print!("Enter 'second': ");
         stdout.flush().unwrap();
-        assert_eq!(input_reader.read_line(), "second");
+        assert_eq!(input.read_line(), "second");
 
-        let mut second_input_reader = InputReader::new();
+        let mut input_b = InputReader::new();
         print!("Enter 'third': ");
         stdout.flush().unwrap();
-        assert_eq!(second_input_reader.read_line(), "third");
+        assert_eq!(input_b.read_line(), "third");
     }
 }
 
@@ -128,31 +128,31 @@ mod input_reader_sim_tests {
 
     #[test]
     fn reads_single_line() {
-        let stdin_playback = vec!["first".to_string()];
-        let mut input_reader = InputReaderSim::new(stdin_playback);
-        assert_eq!(input_reader.read_line(), "first");
+        let stdin = vec!["first".to_string()];
+        let mut input = InputReaderSim::new(stdin);
+        assert_eq!(input.read_line(), "first");
     }
 
     #[test]
     fn reads_many_lines() {
-        let stdin_playback = vec![
+        let stdin = vec![
             "third".to_string(),
             "second".to_string(),
             "first".to_string(),
         ];
-        let mut input_reader = InputReaderSim::new(stdin_playback);
-        assert_eq!(input_reader.read_line(), "first");
-        assert_eq!(input_reader.read_line(), "second");
-        assert_eq!(input_reader.read_line(), "third");
+        let mut input = InputReaderSim::new(stdin);
+        assert_eq!(input.read_line(), "first");
+        assert_eq!(input.read_line(), "second");
+        assert_eq!(input.read_line(), "third");
     }
 
     #[test]
     #[should_panic]
     fn reads_past_playback_panics() {
-        let stdin_playback = vec!["first".to_string()];
-        let mut input_reader = InputReaderSim::new(stdin_playback);
-        input_reader.read_line();
-        input_reader.read_line();
+        let stdin = vec!["first".to_string()];
+        let mut input = InputReaderSim::new(stdin);
+        input.read_line();
+        input.read_line();
     }
 }
 
@@ -166,15 +166,15 @@ mod output_writer_tests {
     #[ignore]
     fn writes_single_lines() {
         let stdin = io::stdin();
-        let mut output_writer = OutputWriter::new();
+        let mut output = OutputWriter::new();
         print!("\n\n\
             Enter 'y' if the following text = \
             'first\\nsecond\\nthird\\n': ");
-        output_writer.write_line("first");
-        output_writer.write_line("second");
+        output.write_line("first".to_string());
+        output.write_line("second".to_string());
 
-        let mut second_output_writer = OutputWriter::new();
-        second_output_writer.write_line("third");
+        let mut output_b = OutputWriter::new();
+        output_b.write_line("third".to_string());
         let mut test_passed = String::new();
         stdin.read_line(&mut test_passed).unwrap();
 
@@ -185,15 +185,15 @@ mod output_writer_tests {
     #[ignore]
     fn writes_str_without_newlines() {
         let stdin = io::stdin();
-        let mut output_writer = OutputWriter::new();
+        let mut output = OutputWriter::new();
         print!("\n\n\
             Enter 'y' if the following text = \
             'first\\nsecond third: ': ");
-        output_writer.write("first\n");
-        output_writer.write("second ");
+        output.write_line("first".to_string());
+        output.write("second ".to_string());
 
-        let mut second_output_writer = OutputWriter::new();
-        second_output_writer.write("third: ");
+        let mut output_b = OutputWriter::new();
+        output_b.write("third: ".to_string());
         let mut test_passed = String::new();
         stdin.read_line(&mut test_passed).unwrap();
 
@@ -208,35 +208,35 @@ mod output_writer_sim_tests {
 
     #[test]
     fn writes_single_line() {
-        let mut output_writer = OutputWriterSim::new();
-        output_writer.write_line("first");
-        assert_eq!(output_writer.pop_line(), "first\n");
+        let mut output = OutputWriterSim::new();
+        output.write_line("first".to_string());
+        assert_eq!(output.pop_line(), "first\n");
     }
 
     #[test]
     fn writes_single_lines() {
-        let mut output_writer = OutputWriterSim::new();
-        output_writer.write_line("first");
-        output_writer.write_line("second");
-        assert_eq!(output_writer.pop_line(), "second\n");
-        assert_eq!(output_writer.pop_line(), "first\n");
+        let mut output = OutputWriterSim::new();
+        output.write_line("first".to_string());
+        output.write_line("second".to_string());
+        assert_eq!(output.pop_line(), "second\n");
+        assert_eq!(output.pop_line(), "first\n");
     }
 
     #[test]
     fn writes_str_without_newlines() {
-        let mut output_writer = OutputWriterSim::new();
-        output_writer.write("first");
-        output_writer.write("second");
-        assert_eq!(output_writer.pop_line(), "second");
-        assert_eq!(output_writer.pop_line(), "first");
+        let mut output = OutputWriterSim::new();
+        output.write("first".to_string());
+        output.write("second".to_string());
+        assert_eq!(output.pop_line(), "second");
+        assert_eq!(output.pop_line(), "first");
     }
 
     #[test]
     fn writes_str_with_and_without_newlines() {
-        let mut output_writer = OutputWriterSim::new();
-        output_writer.write_line("first");
-        output_writer.write("second");
-        assert_eq!(output_writer.pop_line(), "second");
-        assert_eq!(output_writer.pop_line(), "first\n");
+        let mut output = OutputWriterSim::new();
+        output.write_line("first".to_string());
+        output.write("second".to_string());
+        assert_eq!(output.pop_line(), "second");
+        assert_eq!(output.pop_line(), "first\n");
     }
 }
