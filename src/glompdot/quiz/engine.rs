@@ -1,27 +1,26 @@
 
 use glompdot::io;
 
-pub struct Asker<Ti, To>  {
-    input: Ti,
-    output: To,
+pub struct Asker;
+
+pub struct Question {
+    pub q: String,
+    pub a: String,
 }
 
 pub struct Answer {
     pub correct: bool,
 }
 
-impl <Ti, To> Asker<Ti, To> {
-    pub fn new(input: Ti, output: To) -> Asker<Ti, To> {
-        Asker { input: input, output: output }
-    }
-
-    pub fn ask(&mut self, question: &str, answer: &str) -> Answer
-        where Ti: io::InputReadableByLine, To: io::OutputWritable {
-        self.output.write(question);
-
-        let typed_word = self.input.read_line();
-
-        if typed_word == answer {
+impl Asker {
+    pub fn ask<TIn, TOut>(mut input: TIn,
+        mut output: TOut, question: Question)
+        -> Answer where
+            TIn: io::InputReadableByLine,
+            TOut: io::OutputWritable {
+        output.write(question.q);
+        let typed_word = input.read_line();
+        if typed_word == question.a {
             Answer { correct: true }
         }
         else {
@@ -46,13 +45,16 @@ mod asker_tests {
         assert_eq!(answer.correct, true);
     }
 
-        #[test]
+    #[test]
     fn question_answered_incorrectly() {
         let stdin_playback = vec!["equals".to_string()];
         let input_reader = InputReaderSim::new(stdin_playback);
-        let output_writer = OutputWriterSim::new();
-        let mut asker = Asker::new(input_reader, output_writer);
-        let answer = asker.ask("question", "not_equals");
-        assert_eq!(answer.correct, false);
+        let mut output_writer = OutputWriterSim::new();
+        {
+            let mut asker = Asker::new(input_reader, output_writer);
+            let answer = asker.ask("question", "not_equals");
+            assert_eq!(answer.correct, false);
+        }
+        assert_eq!(output_writer.pop_line(), "question")
     }
 }

@@ -51,8 +51,8 @@ pub struct OutputWriterSim {
 }
 
 pub trait OutputWritable {
-    fn write_line(&mut self, line: &str);
-    fn write(&mut self, line: &str);
+    fn write_line(&mut self, line: String);
+    fn write(&mut self, line: String);
 }
 
 impl OutputWriter {
@@ -62,11 +62,11 @@ impl OutputWriter {
 }
 
 impl OutputWritable for OutputWriter {
-    fn write_line(&mut self, line: &str) {
+    fn write_line(&mut self, line: String) {
         println!("{}", line);
     }
 
-    fn write(&mut self, line: &str) {
+    fn write(&mut self, line: String) {
         print!("{}", line);
         io::stdout().flush().unwrap();
     }
