@@ -13,8 +13,8 @@ pub struct Answer {
 }
 
 impl Asker {
-    pub fn ask<TIn, TOut>(mut input: TIn,
-        mut output: TOut, question: Question)
+    pub fn ask<TIn, TOut>(input: &mut TIn,
+        output: &mut TOut, question: Question)
         -> Answer where
             TIn: io::InputReadableByLine,
             TOut: io::OutputWritable {
@@ -40,29 +40,29 @@ mod asker_tests {
     fn question_answered_correctly() {
         let question = Question {
             q: "question".to_string(),
-            a: "equals".to_string(),
+            a: "answer".to_string(),
         };
-        let stdin = vec!["equals".to_string()];
-        let input = InputReaderSim::new(stdin);
-        let output = OutputWriterSim::new();
-        let answer = Asker::ask(input, output, question);
+        let stdin = vec!["answer".to_string()];
+        let mut input = InputReaderSim::new(stdin);
+        let mut output = OutputWriterSim::new();
+        let answer = Asker::ask(&mut input, &mut output, question);
 
         assert_eq!(answer.correct, true);
-        // assert_eq!(output.pop_line(), "question");
+        assert_eq!(output.pop_line(), "question");
     }
 
     #[test]
     fn question_answered_incorrectly() {
         let question = Question {
             q: "question".to_string(),
-            a: "not_equals".to_string(),
+            a: "answer".to_string(),
         };
-        let stdin = vec!["equals".to_string()];
-        let input = InputReaderSim::new(stdin);
-        let output = OutputWriterSim::new();
-        let answer = Asker::ask(input, output, question);
+        let stdin = vec!["incorrect_answer".to_string()];
+        let mut input = InputReaderSim::new(stdin);
+        let mut output = OutputWriterSim::new();
+        let answer = Asker::ask(&mut input, &mut output, question);
         
         assert_eq!(answer.correct, false);
-        // assert_eq!(output.pop_line(), "question");
+        assert_eq!(output.pop_line(), "question");
     }
 }

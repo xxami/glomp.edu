@@ -8,7 +8,7 @@ use glompdot::quiz::engine::Asker;
 use glompdot::quiz::engine::Question;
 
 fn main() {
-    let input = InputReader::new();
+    let mut input = InputReader::new();
     let mut output = OutputWriter::new();
 
     let question = Question {
@@ -16,7 +16,7 @@ fn main() {
         a: "ザワルド".to_string(),
     };
     
-    let answer = Asker::ask(input, output, question);
+    let answer = Asker::ask(&mut input, &mut output, question);
     
     if answer.correct {
         output.write_line("correct!".to_string());
