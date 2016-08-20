@@ -2,7 +2,6 @@
 use std::io;
 use std::io::Write;
 
-//#[derive(Copy, Clone)]
 pub struct InputReader;
 
 #[cfg(test)]
@@ -42,7 +41,6 @@ impl InputReadableByLine for InputReaderSim {
     }
 }
 
-//#[derive(Copy, Clone)]
 pub struct OutputWriter;
 
 #[cfg(test)]
