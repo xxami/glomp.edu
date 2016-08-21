@@ -4,8 +4,8 @@ mod glompdot;
 use glompdot::io::InputReader;
 use glompdot::io::OutputWriter;
 use glompdot::io::OutputWritable;
-use glompdot::quiz::engine::Asker;
-use glompdot::quiz::engine::Question;
+use glompdot::quiz::ask::Asker;
+use glompdot::quiz::ask::Question;
 
 fn main() {
     let mut input = InputReader::new();
