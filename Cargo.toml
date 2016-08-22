@@ -3,3 +3,6 @@
 name = "glompdot"
 version = "0.1.0"
 authors = ["lilah (github.com/xxami)"]
+
+[dependencies]
+toml = "0.2.0"
